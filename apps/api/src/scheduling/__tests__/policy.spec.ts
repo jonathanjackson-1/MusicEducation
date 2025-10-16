@@ -10,7 +10,8 @@ const createService = () => {
     enqueueCancellationNotification: jest.fn(),
     enqueueCalendarReconciliation: jest.fn(),
   } as any;
-  return new SchedulingService(prisma, queue);
+  const audit = { record: jest.fn().mockResolvedValue(null) } as any;
+  return new SchedulingService(prisma, queue, audit);
 };
 
 describe('SchedulingService - booking policy validation', () => {

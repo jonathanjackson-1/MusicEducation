@@ -41,6 +41,10 @@ describe('SchedulingService - reschedule flow', () => {
     enqueueCalendarReconciliation: jest.fn(),
   } as any;
 
+  const audit = {
+    record: jest.fn().mockResolvedValue(null),
+  } as any;
+
   const prisma = {
     lesson: {
       findUnique: jest.fn().mockImplementation(async () => ({
@@ -91,7 +95,7 @@ describe('SchedulingService - reschedule flow', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new SchedulingService(prisma, queue);
+    service = new SchedulingService(prisma, queue, audit);
   });
 
   it('allows educator to propose and student to accept a reschedule', async () => {
@@ -124,5 +128,11 @@ describe('SchedulingService - reschedule flow', () => {
 
     expect(updatedOccurrence.startTime.toISOString()).toBe('2024-04-12T16:00:00.000Z');
     expect(queue.enqueueLessonReminder).toHaveBeenCalled();
+    expect(audit.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'lesson.reschedule.accepted',
+        entity: 'lesson',
+      }),
+    );
   });
 });

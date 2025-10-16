@@ -34,8 +34,12 @@ export class BillingController {
 
   @Patch('subscriptions/:id')
   @Roles(UserRole.ADMIN)
-  updateSubscription(@Param('id') id: string, @Body() dto: UpdateSubscriptionDto) {
-    return this.billingService.updateSubscription(id, dto);
+  updateSubscription(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthUser,
+    @Body() dto: UpdateSubscriptionDto,
+  ) {
+    return this.billingService.updateSubscription(id, user, dto);
   }
 
   @Get('invoices')

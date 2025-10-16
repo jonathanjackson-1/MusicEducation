@@ -7,9 +7,10 @@ import { SubmissionsController } from './submissions.controller';
 import { CommonModule } from '../common/common.module';
 import { SubmissionStorageService } from './submission-storage.service';
 import { AntivirusService } from './antivirus.service';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
-  imports: [CommonModule, ConfigModule],
+  imports: [CommonModule, ConfigModule, AuditModule],
   controllers: [TemplatesController, AssignmentsController, SubmissionsController],
   providers: [CourseworkService, SubmissionStorageService, AntivirusService],
   exports: [CourseworkService],

@@ -93,6 +93,7 @@ enum NotificationJobStatus {
 /// RLS: Applications must filter results by studioId using tenant-aware Prisma middleware.
 model Studio {
   id          String          @id @default(uuid())
+  /// @pii organization
   name        String
   subdomain   String          @unique
   timeZone    String
@@ -122,6 +123,7 @@ model Studio {
   notificationJobs NotificationJob[]
   consents    Consent[]
   audits      AuditLog[]
+  dataRequests DataRequest[]
   subscriptions Subscription[]
   invoices    Invoice[]
   paymentMethods PaymentMethod[]
@@ -136,9 +138,13 @@ model Studio {
 /// Users are scoped to a studio via studioId and share tenant RLS requirements.
 model User {
   id                  String          @id @default(uuid())
+  /// @pii email
   email               String          @unique
+  /// @pii auth_secret
   passwordHash        String?
+  /// @pii name
   firstName           String
+  /// @pii name
   lastName            String
   role                UserRole
   studioId            String
@@ -165,7 +171,8 @@ model User {
   annotationsAuthored Annotation[]    @relation("AnnotationAuthor")
   calendarConnections CalendarConnection[]
   notifications       Notification[]
-  consents            Consent[]
+  consents            Consent[]       @relation("ConsentSubject")
+  consentsGranted     Consent[]       @relation("ConsentGrantedBy")
   audits              AuditLog[]      @relation("AuditActor")
   paymentMethods      PaymentMethod[]
   bookings            BookingRequest[]
@@ -175,6 +182,8 @@ model User {
   notificationPreferences NotificationPreference[]
   notificationSubscriptions NotificationSubscription[]
   notificationJobs NotificationJob[]
+  dataRequests        DataRequest[]   @relation("DataRequestSubject")
+  dataRequestsRequested DataRequest[] @relation("DataRequestActor")
 
   @@index([studioId])
   @@index([role])
@@ -199,8 +208,10 @@ model StudioMember {
 model StudioInvite {
   id         String   @id @default(uuid())
   studioId   String
+  /// @pii email
   email      String
   role       UserRole
+  /// @pii auth_token
   token      String   @unique
   expiresAt  DateTime
   createdAt  DateTime @default(now())
@@ -712,17 +723,21 @@ model NotificationJob {
 model Consent {
   id        String   @id @default(uuid())
   studioId  String
-  userId    String
+  subjectId String
+  grantedById String?
   type      String
   grantedAt DateTime
   revokedAt DateTime?
   metadata  Json?
+  guardianRelationship String?
   createdAt DateTime @default(now())
   studio    Studio   @relation(fields: [studioId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  subject   User     @relation("ConsentSubject", fields: [subjectId], references: [id])
+  grantedBy User?    @relation("ConsentGrantedBy", fields: [grantedById], references: [id])
 
-  @@unique([studioId, userId, type])
+  @@unique([studioId, subjectId, type])
   @@index([studioId])
+  @@index([grantedById])
 }
 
 model AuditLog {
@@ -730,15 +745,50 @@ model AuditLog {
   studioId   String
   actorId    String?
   action     String
-  targetType String
-  targetId   String?
-  metadata   Json?
+  entity     String
+  entityId   String?
+  delta      Json?
+  context    Json?
   createdAt  DateTime @default(now())
   studio     Studio   @relation(fields: [studioId], references: [id])
   actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
 
   @@index([studioId])
   @@index([actorId])
+}
+
+enum DataRequestType {
+  EXPORT
+  DELETE
+}
+
+enum DataRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
+}
+
+model DataRequest {
+  id            String            @id @default(uuid())
+  studioId      String
+  subjectId     String
+  requestedById String
+  type          DataRequestType
+  status        DataRequestStatus @default(PENDING)
+  reason        String?
+  payload       Json?
+  resultUrl     String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  processedAt   DateTime?
+  studio        Studio            @relation(fields: [studioId], references: [id])
+  subject       User              @relation("DataRequestSubject", fields: [subjectId], references: [id])
+  requestedBy   User              @relation("DataRequestActor", fields: [requestedById], references: [id])
+
+  @@index([studioId])
+  @@index([subjectId])
+  @@index([requestedById])
 }
 
 model Plan {
