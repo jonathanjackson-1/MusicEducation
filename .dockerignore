@@ -1,0 +1,12 @@
+.git
+node_modules
+apps/**/node_modules
+packages/**/node_modules
+pnpm-store
+*.log
+.env
+.env.*
+dist
+coverage
+Dockerfile
+*.local
