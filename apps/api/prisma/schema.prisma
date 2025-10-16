@@ -78,6 +78,7 @@ model Studio {
   waitlist    WaitlistEntry[]
   assignments Assignment[]
   assignmentTemplates AssignmentTemplate[]
+  rubrics     Rubric[]
   practiceLogs PracticeLog[]
   practiceGoals PracticeGoal[]
   pieces      Piece[]
@@ -94,6 +95,9 @@ model Studio {
   coupons     Coupon[]
   invites     StudioInvite[]
   users       StudioMember[]
+  availabilityBlocks AvailabilityBlock[]
+  submissions Submission[]
+  grades      Grade[]
 }
 
 /// Users are scoped to a studio via studioId and share tenant RLS requirements.
@@ -116,12 +120,16 @@ model User {
   updatedAt           DateTime        @updatedAt
   studio              Studio          @relation(fields: [studioId], references: [id])
   instrument          Instrument?     @relation(fields: [instrumentId], references: [id])
-  assignments         Assignment[]    @relation("AssignmentAssignedTo")
   assignedAssignments Assignment[]    @relation("AssignmentAssignedBy")
+  assignmentRecipients AssignmentRecipient[]
+  availabilityBlocks AvailabilityBlock[]
+  lessonsTeaching Lesson[] @relation("LessonEducator")
+  lessonsLearning Lesson[] @relation("LessonStudent")
   submissions         Submission[]
   grades              Grade[]         @relation("GradeGradedBy")
   practiceLogs        PracticeLog[]
   practiceGoals       PracticeGoal[]
+  annotationsAuthored Annotation[]    @relation("AnnotationAuthor")
   calendarConnections CalendarConnection[]
   notifications       Notification[]
   consents            Consent[]
@@ -130,6 +138,7 @@ model User {
   bookings            BookingRequest[]
   waitlistEntries     WaitlistEntry[]
   studioInvite        StudioInvite?   @relation(fields: [inviteId], references: [id])
+  studioMemberships   StudioMember[]
 
   @@index([studioId])
   @@index([role])
@@ -295,16 +304,34 @@ model WaitlistEntry {
   @@index([studentId])
 }
 
+enum SubmissionStatus {
+  SUBMITTED
+  RETURNED
+  GRADED
+}
+
+enum GradeResult {
+  PASS
+  FAIL
+}
+
+enum GradeType {
+  NUMERIC
+  PASS_FAIL
+}
+
 model AssignmentTemplate {
   id          String   @id @default(uuid())
   studioId    String
   title       String
   description String?
   rubricId    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  studio      Studio   @relation(fields: [studioId], references: [id])
-  rubric      Rubric?  @relation(fields: [rubricId], references: [id])
+  sections    Json
+  tags        Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  studio      Studio    @relation(fields: [studioId], references: [id])
+  rubric      Rubric?   @relation(fields: [rubricId], references: [id])
   assignments Assignment[]
 
   @@index([studioId])
@@ -316,30 +343,47 @@ model Assignment {
   templateId    String?
   lessonId      String?
   assignedById  String
-  assignedToId  String
   title         String
   instructions  String?
   dueDate       DateTime?
-  status        String  @default("assigned")
+  status        String   @default("assigned")
+  rubricId      String?
+  ensembleId    String?
+  autoReminders Int[]   @default([])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   studio        Studio   @relation(fields: [studioId], references: [id])
   template      AssignmentTemplate? @relation(fields: [templateId], references: [id])
   lesson        Lesson?  @relation(fields: [lessonId], references: [id])
   assignedBy    User     @relation("AssignmentAssignedBy", fields: [assignedById], references: [id])
-  assignedTo    User     @relation("AssignmentAssignedTo", fields: [assignedToId], references: [id])
+  recipients    AssignmentRecipient[]
+  rubric        Rubric?  @relation(fields: [rubricId], references: [id])
   submissions   Submission[]
   annotations   Annotation[]
 
   @@index([studioId])
-  @@index([assignedToId])
+  @@index([ensembleId])
+}
+
+model AssignmentRecipient {
+  id           String   @id @default(uuid())
+  assignmentId String
+  userId       String
+  createdAt    DateTime @default(now())
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@unique([assignmentId, userId])
+  @@index([userId])
 }
 
 model Submission {
   id            String   @id @default(uuid())
   assignmentId  String
   submittedById String
-  content       String?
+  textResponse  String?
+  notes         Json?
+  status        SubmissionStatus @default(SUBMITTED)
   submittedAt   DateTime @default(now())
   studioId      String
   createdAt     DateTime @default(now())
@@ -347,6 +391,7 @@ model Submission {
   assignment    Assignment @relation(fields: [assignmentId], references: [id])
   submittedBy   User       @relation(fields: [submittedById], references: [id])
   grade         Grade?
+  attachments   SubmissionAttachment[]
   recordings    Recording[]
   studio        Studio     @relation(fields: [studioId], references: [id])
 
@@ -354,25 +399,43 @@ model Submission {
   @@index([studioId])
 }
 
+model SubmissionAttachment {
+  id           String   @id @default(uuid())
+  submissionId String
+  fileName     String
+  mimeType     String
+  size         Int
+  storageKey   String
+  url          String
+  createdAt    DateTime @default(now())
+  submission   Submission @relation(fields: [submissionId], references: [id])
+
+  @@index([submissionId])
+}
+
 model Rubric {
-  id        String   @id @default(uuid())
-  studioId  String
-  title     String
-  criteria  Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  studio    Studio   @relation(fields: [studioId], references: [id])
-  assignments AssignmentTemplate[]
-  grades    Grade[]
+  id          String    @id @default(uuid())
+  studioId    String
+  title       String
+  criteria    Json
+  gradingType GradeType @default(NUMERIC)
+  commentBank Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  studio      Studio    @relation(fields: [studioId], references: [id])
+  templates   AssignmentTemplate[]
+  assignments Assignment[]
+  grades      Grade[]
 
   @@index([studioId])
 }
 
 model Grade {
-  id           String   @id @default(uuid())
-  submissionId String   @unique
+  id           String      @id @default(uuid())
+  submissionId String      @unique
   gradedById   String
-  score        Float
+  score        Float?
+  result       GradeResult?
   feedback     String?
   studioId     String
   rubricId     String?
@@ -459,7 +522,7 @@ model Annotation {
   assignment   Assignment?  @relation(fields: [assignmentId], references: [id])
   practiceLog  PracticeLog? @relation(fields: [practiceLogId], references: [id])
   piece        Piece?       @relation(fields: [pieceId], references: [id])
-  author       User?        @relation(fields: [authorId], references: [id])
+  author       User?        @relation("AnnotationAuthor", fields: [authorId], references: [id])
 
   @@index([studioId])
 }
@@ -642,4 +705,3 @@ model Coupon {
 }
 
 /// Seed script should populate demo data with weekly recurring lessons and practice logs.
-*** End of File

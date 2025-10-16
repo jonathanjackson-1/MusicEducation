@@ -22,8 +22,8 @@ export class TemplatesController {
 
   @Get()
   @Roles(UserRole.ADMIN, UserRole.EDUCATOR)
-  list() {
-    return this.courseworkService.listTemplates();
+  list(@CurrentUser() user: AuthUser) {
+    return this.courseworkService.listTemplates(user.studioId);
   }
 
   @Patch(':id')
