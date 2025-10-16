@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 
 import { I18nProvider, type Locale } from '@/lib/i18n';
+import { SentryErrorBoundary } from '@/components/observability/SentryErrorBoundary';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -19,9 +20,11 @@ export const Providers = ({ children, session, locale }: ProvidersProps) => {
 
   return (
     <SessionProvider session={memoizedSession}>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider locale={locale}>{children}</I18nProvider>
-      </QueryClientProvider>
+      <SentryErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <I18nProvider locale={locale}>{children}</I18nProvider>
+        </QueryClientProvider>
+      </SentryErrorBoundary>
     </SessionProvider>
   );
 };
