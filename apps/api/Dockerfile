@@ -1,3 +1,17 @@
+# syntax=docker/dockerfile:1
+ARG NODE_VERSION=20-alpine
+ARG PNPM_VERSION=8.15.4
+
+FROM node:${NODE_VERSION} AS pnpm-base
+ENV PNPM_HOME=/usr/local/share/pnpm \
+    PATH="${PNPM_HOME}:/usr/local/bin:${PATH}"
+RUN npm install -g pnpm@${PNPM_VERSION}
+WORKDIR /app
+
+FROM pnpm-base AS deps
+COPY package.json pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml* ./
+RUN pnpm fetch || true
 # syntax=docker/dockerfile:1.5
 ARG PNPM_VERSION=9.1.0
 
@@ -18,6 +32,12 @@ COPY . .
 RUN pnpm --filter @soundstudio/api... build
 RUN pnpm prune --prod
 
+FROM pnpm-base AS production
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/apps/api/dist ./dist
+COPY apps/api/package.json ./package.json
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production

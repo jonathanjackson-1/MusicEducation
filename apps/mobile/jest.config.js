@@ -1,4 +1,4 @@
-const { getDefaultConfig } = require('@expo/jest-expo/legacy');
+const { getDefaultConfig } = require('jest-expo/legacy');
 
 const config = getDefaultConfig(__dirname);
 
