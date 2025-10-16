@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
+    "@soundstudio/config": "workspace:*",
     "@expo/metro-config": "^0.17.3",
     "@testing-library/react-native": "^12.4.1",
     "@types/jest": "^29.5.12",

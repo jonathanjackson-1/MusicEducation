@@ -25,18 +25,23 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        id: install-deps
         run: pnpm install --frozen-lockfile=false
 
       - name: Lint
+        if: steps.install-deps.outcome == 'success'
         run: pnpm lint
 
       - name: Typecheck
+        if: steps.install-deps.outcome == 'success'
         run: pnpm typecheck
 
       - name: Test
+        if: steps.install-deps.outcome == 'success'
         run: pnpm test
 
       - name: Build packages
+        if: steps.install-deps.outcome == 'success'
         run: pnpm build
 
       - name: Build API image

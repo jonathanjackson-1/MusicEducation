@@ -12,6 +12,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@soundstudio/config": "workspace:*",
     "@commitlint/cli": "^18.6.0",
     "@commitlint/config-conventional": "^18.6.0",
     "eslint": "^8.56.0",
