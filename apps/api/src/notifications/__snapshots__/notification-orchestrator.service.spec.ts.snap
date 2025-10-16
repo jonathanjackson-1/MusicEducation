@@ -1,0 +1,262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationOrchestratorService dispatches notifications across channels respecting preferences 1`] = `
+{
+  "emailMessages": [
+    {
+      "metadata": {
+        "locale": "en",
+        "template": "BOOKING_CONFIRMATION",
+      },
+      "template": {
+        "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Hello Avery Student,</p>
+        <p style="padding-top:12px;">
+
+            This is a friendly reminder that your lesson with Logan Teacher begins in 24 hours on April 22, 2024 at 3:30 PM.
+        </p>
+          <p style="padding-top:8px;">
+Location: Studio A</p>
+        <a href="https://studio.example.com/lessons/lesson-123" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;padding-top:20px;">View lesson details</a>
+        <p style="font-size:14px;color:#6b7280;padding-top:16px;">
+
+          Sound Studio • April 22, 2024 • 3:30 PM
+        </p>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+        "subject": "Reminder: Lesson with Logan Teacher",
+        "text": "<!doctype html> Hello Avery Student, This is a friendly reminder that your lesson with Logan Teacher begins in 24 hours on April 22, 2024 at 3:30 PM. Location: Studio A View lesson details Sound Studio • April 22, 2024 • 3:30 PM",
+      },
+      "to": "avery@student.test",
+    },
+  ],
+  "loggedNotification": {
+    "data": {
+      "payload": {
+        "channels": [
+          "EMAIL",
+          "SMS",
+          "PUSH",
+        ],
+        "context": {
+          "bookingUrl": "https://studio.example.com/lessons/lesson-123",
+          "educatorName": "Logan Teacher",
+          "lessonDate": "April 22, 2024",
+          "lessonTime": "3:30 PM",
+          "pushData": {
+            "studioId": "studio-1",
+            "template": "BOOKING_CONFIRMATION",
+            "userId": "user-1",
+          },
+          "recipientName": "Avery Student",
+          "reminder": true,
+          "reminderWindow": "24 hours",
+          "roomName": "Studio A",
+          "studioName": "Sound Studio",
+        },
+        "locale": "en",
+        "receipts": [
+          {
+            "channel": "EMAIL",
+            "metadata": {
+              "subject": "Reminder: Lesson with Logan Teacher",
+            },
+            "provider": "fake-email",
+            "recipient": "avery@student.test",
+            "status": "sent",
+          },
+          {
+            "channel": "SMS",
+            "metadata": {},
+            "provider": "fake-sms",
+            "recipient": "+15551234567",
+            "status": "sent",
+          },
+          {
+            "channel": "PUSH",
+            "metadata": {
+              "device": "android",
+            },
+            "provider": "fake-fcm",
+            "recipient": "fcm-token",
+            "status": "sent",
+          },
+          {
+            "channel": "PUSH",
+            "metadata": {
+              "device": "ios",
+            },
+            "provider": "fake-apns",
+            "recipient": "apns-token",
+            "status": "sent",
+          },
+        ],
+      },
+      "template": "BOOKING_CONFIRMATION",
+      "type": "BOOKING_CONFIRMATION",
+      "userId": "user-1",
+    },
+  },
+  "pushMessages": [
+    {
+      "payload": {
+        "data": {
+          "studioId": "studio-1",
+          "template": "BOOKING_CONFIRMATION",
+          "userId": "user-1",
+        },
+        "notification": {
+          "body": "Lesson with Logan Teacher on April 22, 2024 at 3:30 PM.",
+          "title": "Lesson reminder",
+        },
+      },
+      "tokens": [
+        {
+          "metadata": {
+            "device": "android",
+          },
+          "provider": "fcm",
+          "token": "fcm-token",
+        },
+        {
+          "metadata": {
+            "device": "ios",
+          },
+          "provider": "apns",
+          "token": "apns-token",
+        },
+      ],
+    },
+  ],
+  "receipts": [
+    {
+      "channel": "EMAIL",
+      "metadata": {
+        "subject": "Reminder: Lesson with Logan Teacher",
+      },
+      "provider": "fake-email",
+      "recipient": "avery@student.test",
+      "status": "sent",
+    },
+    {
+      "channel": "SMS",
+      "metadata": {},
+      "provider": "fake-sms",
+      "recipient": "+15551234567",
+      "status": "sent",
+    },
+    {
+      "channel": "PUSH",
+      "metadata": {
+        "device": "android",
+      },
+      "provider": "fake-fcm",
+      "recipient": "fcm-token",
+      "status": "sent",
+    },
+    {
+      "channel": "PUSH",
+      "metadata": {
+        "device": "ios",
+      },
+      "provider": "fake-apns",
+      "recipient": "apns-token",
+      "status": "sent",
+    },
+  ],
+  "smsMessages": [
+    {
+      "body": "Reminder: Lesson with Logan Teacher on April 22, 2024 at 3:30 PM. Room: Studio A. Details: https://studio.example.com/lessons/lesson-123",
+      "metadata": {
+        "locale": "en",
+        "template": "BOOKING_CONFIRMATION",
+      },
+      "to": "+15551234567",
+    },
+  ],
+}
+`;
+
+exports[`NotificationOrchestratorService subscribes to channels and upserts preferences 1`] = `
+{
+  "preferenceCall": {
+    "create": {
+      "channel": "PUSH",
+      "enabled": true,
+      "locale": "en",
+      "studioId": "studio-1",
+      "template": "PRACTICE_STREAK",
+      "userId": "user-1",
+    },
+    "update": {
+      "enabled": true,
+      "locale": "en",
+    },
+    "where": {
+      "studioId_userId_template_channel": {
+        "channel": "PUSH",
+        "studioId": "studio-1",
+        "template": "PRACTICE_STREAK",
+        "userId": "user-1",
+      },
+    },
+  },
+  "result": {
+    "preferences": [
+      {
+        "channel": "PUSH",
+        "enabled": true,
+        "id": "pref-1",
+        "template": "PRACTICE_STREAK",
+      },
+    ],
+    "subscription": {
+      "channel": "PUSH",
+      "endpoint": "device-token",
+      "id": "sub-1",
+      "provider": "fcm",
+    },
+  },
+  "subscriptionCall": {
+    "create": {
+      "active": true,
+      "channel": "PUSH",
+      "endpoint": "device-token",
+      "locale": "en",
+      "metadata": {
+        "platform": "ios",
+      },
+      "provider": "fcm",
+      "studioId": "studio-1",
+      "userId": "user-1",
+    },
+    "update": {
+      "active": true,
+      "locale": "en",
+      "metadata": {
+        "platform": "ios",
+      },
+      "provider": "fcm",
+    },
+    "where": {
+      "studioId_userId_channel_endpoint": {
+        "channel": "PUSH",
+        "endpoint": "device-token",
+        "studioId": "studio-1",
+        "userId": "user-1",
+      },
+    },
+  },
+}
+`;

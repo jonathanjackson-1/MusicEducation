@@ -1,0 +1,294 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationTemplateEngine renders every template variant 1`] = `
+[
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Hello Avery Student,</p>
+        <p style="padding-top:12px;">
+
+            This is a friendly reminder that your lesson with Logan Teacher begins in 24 hours on April 22, 2024 at 3:30 PM.
+        </p>
+          <p style="padding-top:8px;">
+Location: Studio A</p>
+        <a href="https://studio.example.com/lessons/lesson-123" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;padding-top:20px;">View lesson details</a>
+        <p style="font-size:14px;color:#6b7280;padding-top:16px;">
+
+          Sound Studio • April 22, 2024 • 3:30 PM
+        </p>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "Reminder: Lesson with Logan Teacher",
+      "text": "<!doctype html> Hello Avery Student, This is a friendly reminder that your lesson with Logan Teacher begins in 24 hours on April 22, 2024 at 3:30 PM. Location: Studio A View lesson details Sound Studio • April 22, 2024 • 3:30 PM",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "booking",
+        },
+        "notification": {
+          "body": "Lesson with Logan Teacher on April 22, 2024 at 3:30 PM.",
+          "title": "Lesson reminder",
+        },
+      },
+    },
+    "sms": {
+      "body": "Reminder: Lesson with Logan Teacher on April 22, 2024 at 3:30 PM. Room: Studio A. Details: https://studio.example.com/lessons/lesson-123",
+    },
+    "template": "BOOKING_CONFIRMATION",
+  },
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Hi Avery Student,</p>
+        <p style="padding-top:12px;">
+
+          Logan Teacher proposed a new time for your lesson originally scheduled on April 22, 2024 at 3:30 PM.
+        </p>
+        <p style="padding-top:12px;">
+
+          Suggested time: April 24, 2024 at 5:00 PM.
+        </p>
+        <a href="https://studio.example.com/lessons/proposal" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;padding-top:20px;">Review proposal</a>
+        <p style="font-size:14px;color:#6b7280;padding-top:16px;">
+
+          Need another time? Reply directly to coordinate with Logan Teacher.
+        </p>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "New lesson time proposed by Logan Teacher",
+      "text": "<!doctype html> Hi Avery Student, Logan Teacher proposed a new time for your lesson originally scheduled on April 22, 2024 at 3:30 PM. Suggested time: April 24, 2024 at 5:00 PM. Review proposal Need another time? Reply directly to coordinate with Logan Teacher.",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "reschedule",
+        },
+        "notification": {
+          "body": "Logan Teacher suggested April 24, 2024 at 5:00 PM.",
+          "title": "New lesson time proposed",
+        },
+      },
+    },
+    "sms": {
+      "body": "New time from Logan Teacher: April 24, 2024 at 5:00 PM (original April 22, 2024 3:30 PM). Review: https://studio.example.com/lessons/proposal",
+    },
+    "template": "BOOKING_RESCHEDULE_PROPOSAL",
+  },
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Lesson cancelled</p>
+        <p style="padding-top:12px;">
+Hi Avery Student,</p>
+        <p style="padding-top:12px;">
+
+          Your lesson with Logan Teacher on April 22, 2024 at 3:30 PM has been cancelled.
+        </p>
+          <p style="padding-top:12px;color:#b91c1c;">
+Reason: Educator is unwell</p>
+        <p style="font-size:14px;color:#6b7280;padding-top:16px;">
+
+          Need to reschedule? Book a new time here:
+        </p>
+        <a href="https://studio.example.com/lessons/reschedule" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;background-color:#b91c1c;color:#ffffff;padding-top:12px;">
+          Find another time
+        </a>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "Lesson with Logan Teacher cancelled",
+      "text": "<!doctype html> Lesson cancelled Hi Avery Student, Your lesson with Logan Teacher on April 22, 2024 at 3:30 PM has been cancelled. Reason: Educator is unwell Need to reschedule? Book a new time here: Find another time",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "cancellation",
+        },
+        "notification": {
+          "body": "Logan Teacher cancelled April 22, 2024 at 3:30 PM.",
+          "title": "Lesson cancelled",
+        },
+      },
+    },
+    "sms": {
+      "body": "Lesson with Logan Teacher on April 22, 2024 at 3:30 PM was cancelled. Reason: Educator is unwell. Book again: https://studio.example.com/lessons/reschedule",
+    },
+    "template": "BOOKING_CANCELLATION",
+  },
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+New assignment: Chromatic Scales</p>
+        <p style="padding-top:12px;">
+
+          Logan Teacher assigned new practice for you, Avery Student.
+        </p>
+          <p style="padding-top:12px;">
+Warm up at 60 bpm, increase to 80 bpm.</p>
+          <p style="padding-top:12px;">
+Due April 26, 2024.</p>
+        <a href="https://studio.example.com/assignments/assignment-45" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;padding-top:20px;">Open assignment</a>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "New practice assignment: Chromatic Scales",
+      "text": "<!doctype html> New assignment: Chromatic Scales Logan Teacher assigned new practice for you, Avery Student. Warm up at 60 bpm, increase to 80 bpm. Due April 26, 2024. Open assignment",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "assignment",
+        },
+        "notification": {
+          "body": "Chromatic Scales from Logan Teacher • due April 26, 2024",
+          "title": "New assignment",
+        },
+      },
+    },
+    "sms": {
+      "body": "New assignment "Chromatic Scales" from Logan Teacher. Due April 26, 2024. Open: https://studio.example.com/assignments/assignment-45",
+    },
+    "template": "ASSIGNMENT_CREATED",
+  },
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Feedback received</p>
+        <p style="padding-top:12px;">
+
+          Logan Teacher left feedback on your submission for Chromatic Scales.
+        </p>
+          <p style="padding-top:12px;">
+Score: A</p>
+          <p style="padding-top:12px;color:#111827;font-style:italic;">
+“Great tone and articulation—keep it up!”</p>
+        <a href="https://studio.example.com/submissions/submission-9" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;background-color:#2563eb;color:#ffffff;padding-top:20px;">
+          Read full feedback
+        </a>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "Feedback on Chromatic Scales from Logan Teacher",
+      "text": "<!doctype html> Feedback received Logan Teacher left feedback on your submission for Chromatic Scales. Score: A “Great tone and articulation—keep it up!” Read full feedback",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "feedback",
+        },
+        "notification": {
+          "body": "Logan Teacher on Chromatic Scales • score A",
+          "title": "Feedback available",
+        },
+      },
+    },
+    "sms": {
+      "body": "Logan Teacher left feedback on Chromatic Scales. Score: A. Read: https://studio.example.com/submissions/submission-9",
+    },
+    "template": "SUBMISSION_FEEDBACK",
+  },
+  {
+    "email": {
+      "html": "<!doctype html><html><body>
+  
+  <div class="mj-body" style="background-color:#f9fafb;">
+
+    <section style="background-color:#ffffff;padding:24px;">
+
+      <div class="mj-column">
+
+        <p style="font-size:20px;font-weight:600;">
+Weekly practice summary</p>
+        <p style="padding-top:12px;">
+
+          Amazing work, Avery Student! You practiced 210 minutes this week and kept a 12-day streak alive.
+        </p>
+          <p style="padding-top:12px;font-weight:600;">
+Highlights</p>
+            <p style="padding-top:8px;">
+• Logged 6 sessions</p>
+            <p style="padding-top:8px;">
+• Met tempo goal twice</p>
+        <a href="" style="display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;background-color:#f97316;color:#ffffff;padding-top:20px;">
+          Review practice log
+        </a>
+      </div>
+    </section>
+  </div>
+</body></html>
+",
+      "subject": "Avery Student, you kept the streak going!",
+      "text": "<!doctype html> Weekly practice summary Amazing work, Avery Student! You practiced 210 minutes this week and kept a 12-day streak alive. Highlights • Logged 6 sessions • Met tempo goal twice Review practice log",
+    },
+    "push": {
+      "payload": {
+        "data": {
+          "origin": "practice",
+        },
+        "notification": {
+          "body": "Avery Student logged 210 min • 12-day streak",
+          "title": "Streak alive!",
+        },
+      },
+    },
+    "sms": {
+      "body": "Avery Student, you logged 210 minutes this week and kept a 12-day streak. Keep it up! Log:",
+    },
+    "template": "PRACTICE_STREAK",
+  },
+]
+`;
