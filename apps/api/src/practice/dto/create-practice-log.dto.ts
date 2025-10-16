@@ -1,9 +1,19 @@
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateIf,
+} from 'class-validator';
+import { PracticeCategory } from '@prisma/client';
 
 export class CreatePracticeLogDto {
+  @ValidateIf((value) => value.durationMinutes !== undefined)
   @IsInt()
   @Min(0)
-  durationMinutes!: number;
+  durationMinutes?: number;
 
   @IsOptional()
   @IsString()
@@ -20,4 +30,20 @@ export class CreatePracticeLogDto {
   @IsOptional()
   @IsString()
   practiceGoalId?: string;
+
+  @IsOptional()
+  @IsEnum(PracticeCategory)
+  category?: PracticeCategory;
+
+  @IsOptional()
+  @IsISO8601()
+  startedAt?: string;
+
+  @IsOptional()
+  @IsISO8601()
+  endedAt?: string;
+
+  @IsOptional()
+  @IsString()
+  assignmentId?: string;
 }

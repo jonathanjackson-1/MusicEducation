@@ -180,8 +180,14 @@ async function main() {
       studioId: studio.id,
       studentId: student.id,
       title: 'Daily Practice',
-      targetMinutes: 140,
+      weeklyTargetMinutes: 140,
       startDate: new Date(),
+      vacationRanges: [
+        {
+          start: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          end: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      ],
     },
   });
 

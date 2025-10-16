@@ -50,6 +50,12 @@ enum PaymentMethodType {
   BANK
 }
 
+enum PracticeCategory {
+  WARMUP
+  REPERTOIRE
+  TECHNIQUE
+}
+
 enum DiscountType {
   AMOUNT
   PERCENT
@@ -360,6 +366,7 @@ model Assignment {
   rubric        Rubric?  @relation(fields: [rubricId], references: [id])
   submissions   Submission[]
   annotations   Annotation[]
+  practiceLogs  PracticeLog[]
 
   @@index([studioId])
   @@index([ensembleId])
@@ -451,22 +458,38 @@ model Grade {
 }
 
 model PracticeGoal {
-  id            String   @id @default(uuid())
-  studioId      String
-  studentId     String
-  title         String
-  description   String?
-  targetMinutes Int
-  startDate     DateTime
-  endDate       DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  studio        Studio   @relation(fields: [studioId], references: [id])
-  student       User     @relation(fields: [studentId], references: [id])
-  practiceLogs  PracticeLog[]
+  id                  String   @id @default(uuid())
+  studioId            String
+  studentId           String
+  title               String
+  description         String?
+  weeklyTargetMinutes Int
+  startDate           DateTime
+  endDate             DateTime?
+  vacationRanges      Json     @default("[]")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  studio              Studio   @relation(fields: [studioId], references: [id])
+  student             User     @relation(fields: [studentId], references: [id])
+  practiceLogs        PracticeLog[]
+  pieceTargets        PracticeGoalPieceTarget[]
 
   @@index([studioId])
   @@index([studentId])
+}
+
+model PracticeGoalPieceTarget {
+  id              String @id @default(uuid())
+  practiceGoalId  String
+  pieceId         String
+  targetMinutes   Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  practiceGoal    PracticeGoal @relation(fields: [practiceGoalId], references: [id])
+  piece           Piece        @relation(fields: [pieceId], references: [id])
+
+  @@unique([practiceGoalId, pieceId])
+  @@index([pieceId])
 }
 
 model Piece {
@@ -479,33 +502,40 @@ model Piece {
   studio    Studio   @relation(fields: [studioId], references: [id])
   practiceLogs PracticeLog[]
   annotations Annotation[]
+  practiceGoalTargets PracticeGoalPieceTarget[]
 
   @@index([studioId])
   @@unique([studioId, title])
 }
 
 model PracticeLog {
-  id             String   @id @default(uuid())
-  studioId       String
-  studentId      String
-  pieceId        String?
-  instrumentId   String?
-  practiceGoalId String?
-  durationMinutes Int
-  notes          String?
-  practicedAt    DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  studio         Studio   @relation(fields: [studioId], references: [id])
-  student        User     @relation(fields: [studentId], references: [id])
-  piece          Piece?   @relation(fields: [pieceId], references: [id])
-  instrument     Instrument? @relation(fields: [instrumentId], references: [id])
-  practiceGoal   PracticeGoal? @relation(fields: [practiceGoalId], references: [id])
-  recordings     Recording[]
-  annotations    Annotation[]
+  id              String   @id @default(uuid())
+  studioId        String
+  studentId       String
+  pieceId         String?
+  instrumentId    String?
+  practiceGoalId  String?
+  assignmentId    String?
+  category        PracticeCategory @default(REPERTOIRE)
+  durationMinutes Int              @default(0)
+  notes           String?
+  practicedAt     DateTime         @default(now())
+  startedAt       DateTime         @default(now())
+  endedAt         DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  studio          Studio           @relation(fields: [studioId], references: [id])
+  student         User             @relation(fields: [studentId], references: [id])
+  piece           Piece?           @relation(fields: [pieceId], references: [id])
+  instrument      Instrument?      @relation(fields: [instrumentId], references: [id])
+  practiceGoal    PracticeGoal?    @relation(fields: [practiceGoalId], references: [id])
+  assignment      Assignment?      @relation(fields: [assignmentId], references: [id])
+  recordings      Recording[]
+  annotations     Annotation[]
 
   @@index([studioId])
   @@index([studentId])
+  @@index([assignmentId])
 }
 
 model Annotation {

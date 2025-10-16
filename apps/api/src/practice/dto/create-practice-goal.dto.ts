@@ -1,4 +1,30 @@
-import { IsDateString, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class PracticePieceTargetDto {
+  @IsString()
+  pieceId!: string;
+
+  @IsInt()
+  @Min(0)
+  targetMinutes!: number;
+}
+
+export class PracticeVacationRangeDto {
+  @IsDateString()
+  start!: string;
+
+  @IsDateString()
+  end!: string;
+}
 
 export class CreatePracticeGoalDto {
   @IsString()
@@ -13,7 +39,7 @@ export class CreatePracticeGoalDto {
 
   @IsInt()
   @Min(0)
-  targetMinutes!: number;
+  weeklyTargetMinutes!: number;
 
   @IsDateString()
   startDate!: string;
@@ -21,4 +47,16 @@ export class CreatePracticeGoalDto {
   @IsOptional()
   @IsDateString()
   endDate?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PracticePieceTargetDto)
+  pieceTargets?: PracticePieceTargetDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PracticeVacationRangeDto)
+  vacations?: PracticeVacationRangeDto[];
 }
