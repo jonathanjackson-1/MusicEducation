@@ -1,0 +1,12 @@
+{
+  "extends": "@soundstudio/config/tsconfig/nest",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@soundstudio/types": ["../../packages/types/src/index"],
+      "@soundstudio/ui": ["../../packages/ui/src/index"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
