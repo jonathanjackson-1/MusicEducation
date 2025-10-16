@@ -1,0 +1,11 @@
+# Placeholder pnpm lockfile to unblock CI caching. Run `pnpm install` to regenerate with full dependency metadata.
+lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .:
+    dependencies: {}
+    devDependencies: {}
+    optionalDependencies: {}
+packages: {}
