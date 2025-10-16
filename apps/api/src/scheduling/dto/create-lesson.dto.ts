@@ -1,4 +1,21 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsIn, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class LessonExceptionInputDto {
+  @IsDateString()
+  date!: string;
+
+  @IsIn(['CANCELLED', 'RESCHEDULED'])
+  type!: 'CANCELLED' | 'RESCHEDULED';
+
+  @IsOptional()
+  @IsDateString()
+  newStart?: string;
+
+  @IsOptional()
+  @IsDateString()
+  newEnd?: string;
+}
 
 export class CreateLessonDto {
   @IsString()
@@ -28,4 +45,10 @@ export class CreateLessonDto {
   @IsOptional()
   @IsDateString()
   endDate?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LessonExceptionInputDto)
+  exceptions?: LessonExceptionInputDto[];
 }
