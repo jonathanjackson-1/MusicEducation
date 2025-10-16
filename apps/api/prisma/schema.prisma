@@ -67,6 +67,7 @@ model Studio {
   name        String
   subdomain   String          @unique
   timeZone    String
+  bookingPolicy Json?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   members     User[]

@@ -1,12 +1,11 @@
 {
   "name": "Soundstudio",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-  "features": {
-    "ghcr.io/devcontainers/features/pnpm:1": {
-      "version": "8.15.4"
-    }
-  },
-  "postCreateCommand": "pnpm install",
+  "postCreateCommand": [
+    "bash",
+    "-lc",
+    "corepack prepare pnpm@8.15.4 --activate && pnpm install"
+  ],
   "customizations": {
     "vscode": {
       "settings": {
