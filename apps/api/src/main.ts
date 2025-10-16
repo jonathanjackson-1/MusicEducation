@@ -2,9 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { RedactingLogger } from './common/logging/redacting.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: new RedactingLogger() });
   const config = app.get(ConfigService);
   app.useGlobalPipes(
     new ValidationPipe({

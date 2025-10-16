@@ -22,6 +22,7 @@ import { UserRole } from '../common/interfaces/user-role.enum';
 import { SubmissionStorageService } from './submission-storage.service';
 import { AntivirusService } from './antivirus.service';
 import { CourseworkEvents } from './coursework.events';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class CourseworkService {
@@ -30,6 +31,7 @@ export class CourseworkService {
     private readonly storage: SubmissionStorageService,
     private readonly antivirus: AntivirusService,
     private readonly events: EventEmitter2,
+    private readonly audit: AuditService,
   ) {}
 
   private assignmentInclude() {
@@ -392,6 +394,31 @@ export class CourseworkService {
         studioId: user.studioId,
         rubricId: rubricId ?? null,
       },
+    });
+
+    await this.audit.record({
+      studioId: user.studioId,
+      actorId: user.id,
+      entity: 'grade',
+      entityId: grade.id,
+      action: submission.grade ? 'grade.updated' : 'grade.created',
+      delta: {
+        previous: submission.grade
+          ? {
+              score: submission.grade.score,
+              result: submission.grade.result,
+              feedback: submission.grade.feedback,
+              rubricId: submission.grade.rubricId,
+            }
+          : null,
+        current: {
+          score: grade.score,
+          result: grade.result,
+          feedback: grade.feedback,
+          rubricId: grade.rubricId,
+        },
+      },
+      context: { submissionId, assignmentId: submission.assignmentId },
     });
 
     await this.prisma.submission.update({

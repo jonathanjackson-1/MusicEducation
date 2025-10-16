@@ -8,6 +8,8 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/interfaces/user-role.enum';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { AuthUser } from '../common/interfaces/auth-user.interface';
+import { CreateParentalConsentDto } from './dto/create-parental-consent.dto';
+import { CreateDataRequestDto } from './dto/create-data-request.dto';
 
 @Controller('consents')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -17,7 +19,7 @@ export class ConsentController {
   @Post()
   @Roles(UserRole.ADMIN)
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateConsentDto) {
-    return this.consentService.create(user.studioId, dto);
+    return this.consentService.create(user, dto);
   }
 
   @Get()
@@ -28,7 +30,25 @@ export class ConsentController {
 
   @Patch(':id')
   @Roles(UserRole.ADMIN)
-  update(@Param('id') id: string, @Body() dto: UpdateConsentDto) {
-    return this.consentService.update(id, dto);
+  update(@Param('id') id: string, @CurrentUser() user: AuthUser, @Body() dto: UpdateConsentDto) {
+    return this.consentService.update(id, user, dto);
+  }
+
+  @Post('parental')
+  @Roles(UserRole.ADMIN)
+  recordParental(@CurrentUser() user: AuthUser, @Body() dto: CreateParentalConsentDto) {
+    return this.consentService.recordParentalConsent(user, dto);
+  }
+
+  @Post('data-requests')
+  @Roles(UserRole.ADMIN)
+  createDataRequest(@CurrentUser() user: AuthUser, @Body() dto: CreateDataRequestDto) {
+    return this.consentService.createDataRequest(user, dto);
+  }
+
+  @Get('data-requests')
+  @Roles(UserRole.ADMIN)
+  listDataRequests(@CurrentUser() user: AuthUser) {
+    return this.consentService.listDataRequests(user.studioId);
   }
 }

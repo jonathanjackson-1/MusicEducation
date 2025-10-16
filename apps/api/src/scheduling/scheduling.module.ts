@@ -6,9 +6,10 @@ import { BookingsController } from './bookings.controller';
 import { CalendarController } from './calendar.controller';
 import { CommonModule } from '../common/common.module';
 import { SchedulingQueueService } from './scheduling-queue.service';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
-  imports: [CommonModule],
+  imports: [CommonModule, AuditModule],
   controllers: [LessonsController, AvailabilityController, BookingsController, CalendarController],
   providers: [SchedulingService, SchedulingQueueService],
   exports: [SchedulingService],

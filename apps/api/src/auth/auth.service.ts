@@ -216,9 +216,9 @@ export class AuthService {
         studioId: user.studioId,
         actorId: user.id,
         action: 'password.reset.request',
-        targetType: 'user',
-        targetId: user.id,
-        metadata: { token },
+        entity: 'user',
+        entityId: user.id,
+        delta: { token },
       },
     });
 
@@ -229,16 +229,16 @@ export class AuthService {
     const audit = await this.prisma.auditLog.findFirst({
       where: {
         action: 'password.reset.request',
-        metadata: { path: ['token'], equals: dto.token },
+        delta: { path: ['token'], equals: dto.token },
       },
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!audit?.targetId) {
+    if (!audit?.entityId) {
       throw new UnauthorizedException('Invalid reset token');
     }
 
-    const user = await this.prisma.user.findUnique({ where: { id: audit.targetId } });
+    const user = await this.prisma.user.findUnique({ where: { id: audit.entityId } });
     if (!user) {
       throw new UnauthorizedException('Invalid reset token');
     }

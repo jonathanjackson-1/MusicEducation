@@ -37,6 +37,7 @@ const TENANT_SCOPED_MODELS = [
   'Coupon',
   'StudioInvite',
   'StudioMember',
+  'DataRequest',
 ];
 
 @Injectable()
@@ -54,6 +55,25 @@ export class PrismaService
           url: configService.get<string>('DATABASE_URL'),
         },
       },
+    });
+
+    this.$use(async (params: any, next: any) => {
+      if (params.action === '$executeRaw' || params.action === '$executeRawUnsafe') {
+        return next(params);
+      }
+
+      const studioId = this.tenantContext.getStudioId();
+      if (!studioId) {
+        return next(params);
+      }
+
+      await super.$executeRaw`select set_config('app.current_studio', ${studioId}, true)`;
+
+      try {
+        return await next(params);
+      } finally {
+        await super.$executeRaw`select set_config('app.current_studio', '', true)`;
+      }
     });
 
     this.$use(async (params: any, next: any) => {

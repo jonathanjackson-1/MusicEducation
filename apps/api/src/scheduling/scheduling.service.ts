@@ -11,6 +11,7 @@ import { SchedulingQueueService } from './scheduling-queue.service';
 import { AuthUser } from '../common/interfaces/auth-user.interface';
 import { UserRole } from '../common/interfaces/user-role.enum';
 import { BookingRequestStatus, LessonExceptionType } from '@prisma/client';
+import { AuditService } from '../audit/audit.service';
 
 interface RecurrenceSeries {
   start: Date;
@@ -86,7 +87,11 @@ const DEFAULT_BOOKING_POLICY: BookingPolicy = {
 
 @Injectable()
 export class SchedulingService {
-  constructor(private readonly prisma: PrismaService, private readonly queue: SchedulingQueueService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly queue: SchedulingQueueService,
+    private readonly audit: AuditService,
+  ) {}
 
   /**
    * Expands a recurrence series into concrete lesson occurrences for the provided date range.
@@ -524,6 +529,20 @@ export class SchedulingService {
         });
 
         await this.queue.enqueueRescheduleFollowUp(lessonId, occurrence.id);
+        await this.audit.record({
+          studioId: lesson.studioId,
+          actorId: user.id,
+          entity: 'lesson',
+          entityId: lesson.id,
+          action: 'lesson.reschedule.proposed',
+          delta: {
+            occurrenceId: occurrence.id,
+            originalStart: occurrence.startTime.toISOString(),
+            proposals: dto.proposals,
+            note: dto.note,
+          },
+          context: { lessonId },
+        });
         return payload;
       }
       case RescheduleAction.Accept: {
@@ -588,6 +607,26 @@ export class SchedulingService {
         });
 
         await this.queue.enqueueLessonReminder(lessonId, occurrence.id, new Date(start.getTime() - 60 * 60 * 1000));
+        await this.audit.record({
+          studioId: lesson.studioId,
+          actorId: user.id,
+          entity: 'lesson',
+          entityId: lesson.id,
+          action: 'lesson.reschedule.accepted',
+          delta: {
+            occurrenceId: occurrence.id,
+            previous: {
+              start: occurrence.startTime.toISOString(),
+              end: occurrence.endTime.toISOString(),
+            },
+            current: {
+              start: updatedOccurrence.startTime.toISOString(),
+              end: updatedOccurrence.endTime.toISOString(),
+            },
+            proposalId: proposal.id,
+          },
+          context: { lessonId },
+        });
         return updatedOccurrence;
       }
       case RescheduleAction.Decline: {
@@ -622,6 +661,19 @@ export class SchedulingService {
         });
 
         await this.queue.enqueueWaitlistOffer(lessonId);
+        await this.audit.record({
+          studioId: lesson.studioId,
+          actorId: user.id,
+          entity: 'lesson',
+          entityId: lesson.id,
+          action: 'lesson.reschedule.declined',
+          delta: {
+            occurrenceId: occurrence.id,
+            proposalId: dto.proposalId,
+            declinedAt: updatedPayload.declinedAt,
+          },
+          context: { lessonId },
+        });
         return updatedPayload;
       }
       default:
@@ -680,6 +732,20 @@ export class SchedulingService {
     });
 
     await this.queue.enqueueCancellationNotification(lessonId, occurrence.id, outcome);
+    await this.audit.record({
+      studioId: lesson.studioId,
+      actorId: user.id,
+      entity: 'lesson',
+      entityId: lesson.id,
+      action: 'lesson.cancelled',
+      delta: {
+        occurrenceId: occurrence.id,
+        scheduledStart: occurrence.startTime.toISOString(),
+        reason: dto.reason,
+        penalty: outcome,
+      },
+      context: { lessonId },
+    });
 
     return outcome;
   }

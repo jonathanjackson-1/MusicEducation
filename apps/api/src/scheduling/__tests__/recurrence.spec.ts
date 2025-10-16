@@ -12,7 +12,8 @@ describe('SchedulingService - recurrence expansion', () => {
       enqueueCancellationNotification: jest.fn(),
       enqueueCalendarReconciliation: jest.fn(),
     } as any;
-    service = new SchedulingService(prisma, queue);
+    const audit = { record: jest.fn().mockResolvedValue(null) } as any;
+    service = new SchedulingService(prisma, queue, audit);
   });
 
   it('expands recurrence series with cancellations and reschedules', () => {

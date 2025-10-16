@@ -1,8 +1,8 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class CreateConsentDto {
   @IsString()
-  userId!: string;
+  subjectId!: string;
 
   @IsString()
   type!: string;
@@ -10,4 +10,8 @@ export class CreateConsentDto {
   @IsOptional()
   @IsBoolean()
   granted?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, unknown>;
 }
