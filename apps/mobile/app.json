@@ -2,6 +2,7 @@
   "expo": {
     "name": "Soundstudio",
     "slug": "soundstudio",
+    "scheme": "soundstudio",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,6 +24,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#050816"
       }
-    }
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
   }
 }
