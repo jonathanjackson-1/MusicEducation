@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { PracticeService } from './practice.service';
 import { CreatePracticeLogDto } from './dto/create-practice-log.dto';
 import { UpdatePracticeLogDto } from './dto/update-practice-log.dto';
@@ -39,5 +48,25 @@ export class PracticeController {
   @Roles(UserRole.ADMIN, UserRole.EDUCATOR)
   createGoal(@CurrentUser() user: AuthUser, @Body() dto: CreatePracticeGoalDto) {
     return this.practiceService.createGoal(user.studioId, dto);
+  }
+
+  @Get('analytics/student')
+  @Roles(UserRole.STUDENT, UserRole.PARENT, UserRole.EDUCATOR, UserRole.ADMIN)
+  getStudentAnalytics(
+    @CurrentUser() user: AuthUser,
+    @Query('studentId') studentId?: string,
+  ) {
+    return this.practiceService.getStudentAnalytics(user, studentId);
+  }
+
+  @Get('analytics/educator')
+  @Roles(UserRole.ADMIN, UserRole.EDUCATOR)
+  getEducatorAnalytics(
+    @CurrentUser() user: AuthUser,
+    @Query('weeksBelowGoal') weeksBelowGoal?: string,
+  ) {
+    const parsed = weeksBelowGoal ? Number(weeksBelowGoal) : 2;
+    const weeks = Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 2;
+    return this.practiceService.getEducatorAnalytics(user, weeks);
   }
 }
