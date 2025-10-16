@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { TenantContextService } from './tenant-context.service';
 
 const TENANT_SCOPED_MODELS = [
@@ -26,6 +26,9 @@ const TENANT_SCOPED_MODELS = [
   'CalendarConnection',
   'VideoSession',
   'Notification',
+  'NotificationPreference',
+  'NotificationSubscription',
+  'NotificationJob',
   'Consent',
   'AuditLog',
   'Subscription',
@@ -53,7 +56,7 @@ export class PrismaService
       },
     });
 
-    this.$use(async (params, next) => {
+    this.$use(async (params: any, next: any) => {
       if (!params.model || !TENANT_SCOPED_MODELS.includes(params.model)) {
         return next(params);
       }
@@ -76,7 +79,7 @@ export class PrismaService
     await this.$disconnect();
   }
 
-  private async applyTenantFilter(params: Prisma.MiddlewareParams, studioId: string) {
+  private async applyTenantFilter(params: any, studioId: string) {
     const action = params.action;
     params.args = params.args ?? {};
 

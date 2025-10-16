@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationSchedulerService schedules lesson reminder jobs with offsets 1`] = `
+{
+  "persisted": [
+    {
+      "channel": null,
+      "id": "job-1",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 24,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "24 hours",
+        },
+      },
+      "runAt": "2024-04-21T15:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "student-1",
+    },
+    {
+      "channel": null,
+      "id": "job-2",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 1,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "1 hour",
+        },
+      },
+      "runAt": "2024-04-22T14:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "student-1",
+    },
+    {
+      "channel": null,
+      "id": "job-3",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 24,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "24 hours",
+        },
+      },
+      "runAt": "2024-04-21T15:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "educator-1",
+    },
+    {
+      "channel": null,
+      "id": "job-4",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 1,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "1 hour",
+        },
+      },
+      "runAt": "2024-04-22T14:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "educator-1",
+    },
+  ],
+  "result": [
+    {
+      "channel": null,
+      "id": "job-1",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 24,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "24 hours",
+        },
+      },
+      "runAt": "2024-04-21T15:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "student-1",
+    },
+    {
+      "channel": null,
+      "id": "job-2",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 1,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "1 hour",
+        },
+      },
+      "runAt": "2024-04-22T14:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "student-1",
+    },
+    {
+      "channel": null,
+      "id": "job-3",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 24,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "24 hours",
+        },
+      },
+      "runAt": "2024-04-21T15:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "educator-1",
+    },
+    {
+      "channel": null,
+      "id": "job-4",
+      "payload": {
+        "lessonId": "lesson-1",
+        "reminderOffsetHours": 1,
+        "templateContext": {
+          "lessonDate": "April 22",
+          "lessonTime": "3:30 PM",
+          "reminder": true,
+          "reminderWindow": "1 hour",
+        },
+      },
+      "runAt": "2024-04-22T14:30:00.000Z",
+      "status": "PENDING",
+      "studioId": "studio-1",
+      "template": "BOOKING_CONFIRMATION",
+      "userId": "educator-1",
+    },
+  ],
+}
+`;
+
+exports[`NotificationSchedulerService schedules overdue assignment nudge 1`] = `
+{
+  "job": {
+    "channel": null,
+    "id": "job-1",
+    "payload": {
+      "assignmentId": "assignment-1",
+      "nudge": true,
+      "nudgeDays": 2,
+      "templateContext": {
+        "assignmentTitle": "Chromatic Scales",
+        "nudge": true,
+      },
+    },
+    "runAt": "2024-04-23T17:00:00.000Z",
+    "status": "PENDING",
+    "studioId": "studio-1",
+    "template": "ASSIGNMENT_CREATED",
+    "userId": "student-1",
+  },
+}
+`;
+
+exports[`NotificationSchedulerService schedules weekly practice summary 1`] = `
+{
+  "job": {
+    "channel": null,
+    "id": "job-1",
+    "payload": {
+      "templateContext": {
+        "totalMinutes": 210,
+        "weeklySummary": true,
+      },
+      "weekOf": 2024-04-15T00:00:00.000Z,
+    },
+    "runAt": "2024-04-22T18:00:00.000Z",
+    "status": "PENDING",
+    "studioId": "studio-1",
+    "template": "PRACTICE_STREAK",
+    "userId": "student-1",
+  },
+}
+`;
