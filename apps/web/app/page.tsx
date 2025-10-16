@@ -1,18 +1,27 @@
-import { Button, Card } from '@soundstudio/ui';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
-      <Card className="w-full max-w-xl space-y-4 p-6 text-center">
-        <h1 className="text-3xl font-semibold">Welcome to Soundstudio</h1>
-        <p className="text-muted-foreground">
-          A modern learning environment for aspiring musicians with synchronized experiences
-          across web, mobile, and beyond.
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          <Button>Start practicing</Button>
-          <Button variant="outline">Explore lessons</Button>
-        </div>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-muted/40 p-8">
+      <Card className="w-full max-w-2xl text-center">
+        <CardHeader>
+          <CardTitle className="text-4xl font-semibold">Welcome to Soundstudio</CardTitle>
+          <CardDescription>
+            A modern learning environment that aligns educators, students, and parents with
+            collaborative practice tools and insights.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-4">
+          <Button asChild className="w-full max-w-xs">
+            <Link href="/login">Enter the studio</Link>
+          </Button>
+          <Button variant="outline" asChild className="w-full max-w-xs">
+            <Link href="/student/practice">Preview practice tools</Link>
+          </Button>
+        </CardContent>
       </Card>
     </main>
   );
