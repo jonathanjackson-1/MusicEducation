@@ -1,6 +1,8 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CourseworkService } from './coursework.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
+import { GradeSubmissionDto } from './dto/grade-submission.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -15,7 +17,25 @@ export class SubmissionsController {
 
   @Post()
   @Roles(UserRole.STUDENT, UserRole.PARENT, UserRole.EDUCATOR)
-  create(@CurrentUser() user: AuthUser, @Body() dto: CreateSubmissionDto) {
-    return this.courseworkService.createSubmission(user, dto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 5 }]))
+  create(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateSubmissionDto,
+    @UploadedFiles()
+    files: {
+      files?: Express.Multer.File[];
+    },
+  ) {
+    return this.courseworkService.createSubmission(user, dto, files?.files ?? []);
+  }
+
+  @Post(':id/grade')
+  @Roles(UserRole.EDUCATOR, UserRole.ADMIN)
+  grade(
+    @CurrentUser() user: AuthUser,
+    @Param('id') submissionId: string,
+    @Body() dto: GradeSubmissionDto,
+  ) {
+    return this.courseworkService.gradeSubmission(user, submissionId, dto);
   }
 }
