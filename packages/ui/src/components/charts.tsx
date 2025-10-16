@@ -1,28 +1,95 @@
 import * as React from 'react';
 import type { TooltipProps } from 'recharts';
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  RadialBar,
-  RadialBarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
 
 import { cn } from '../lib';
 
 const isBrowser = typeof window !== 'undefined';
+
+type RechartsModule = typeof import('recharts');
+type RechartsComponentName =
+  | 'Area'
+  | 'AreaChart'
+  | 'Bar'
+  | 'BarChart'
+  | 'CartesianGrid'
+  | 'Cell'
+  | 'Legend'
+  | 'Line'
+  | 'LineChart'
+  | 'Pie'
+  | 'PieChart'
+  | 'RadialBar'
+  | 'RadialBarChart'
+  | 'ResponsiveContainer'
+  | 'Tooltip'
+  | 'XAxis'
+  | 'YAxis';
+
+let cachedRechartsModule: RechartsModule | null = null;
+
+const getRechartsModule = (): RechartsModule | null => {
+  if (!isBrowser) {
+    return null;
+  }
+
+  if (cachedRechartsModule) {
+    return cachedRechartsModule;
+  }
+
+  try {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    cachedRechartsModule = require('recharts') as RechartsModule;
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Failed to load Recharts. Charts will render as placeholders.', error);
+    }
+    return null;
+  }
+
+  return cachedRechartsModule;
+};
+
+const createRechartsComponent = <Name extends RechartsComponentName>(componentName: Name) => {
+  type ComponentType = RechartsModule[Name];
+  type Props = ComponentType extends React.ComponentType<infer P> ? P : Record<string, unknown>;
+
+  const Component: React.FC<Props> = (props) => {
+    if (!isBrowser) {
+      return null;
+    }
+
+    const module = getRechartsModule();
+    const Implementation = module?.[componentName] as React.ComponentType<Props> | undefined;
+
+    if (!Implementation) {
+      return null;
+    }
+
+    return <Implementation {...props} />;
+  };
+
+  Component.displayName = componentName;
+
+  return Component as unknown as ComponentType;
+};
+
+const Area = createRechartsComponent('Area');
+const AreaChart = createRechartsComponent('AreaChart');
+const Bar = createRechartsComponent('Bar');
+const BarChart = createRechartsComponent('BarChart');
+const CartesianGrid = createRechartsComponent('CartesianGrid');
+const Cell = createRechartsComponent('Cell');
+const Legend = createRechartsComponent('Legend');
+const Line = createRechartsComponent('Line');
+const LineChart = createRechartsComponent('LineChart');
+const Pie = createRechartsComponent('Pie');
+const PieChart = createRechartsComponent('PieChart');
+const RadialBar = createRechartsComponent('RadialBar');
+const RadialBarChart = createRechartsComponent('RadialBarChart');
+const ResponsiveContainer = createRechartsComponent('ResponsiveContainer');
+const Tooltip = createRechartsComponent('Tooltip');
+const XAxis = createRechartsComponent('XAxis');
+const YAxis = createRechartsComponent('YAxis');
 
 export interface ChartContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Height of the chart container in pixels. */
